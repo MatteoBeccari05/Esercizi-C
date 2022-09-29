@@ -1,0 +1,44 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int massimo(int argc, char *argv[])                    //metodo per controllare il numero più grande
+{
+    int max = atoi(argv[1]), numero;
+    for (int i = 2; i < argc; i++)             //for che cicla tutti i numeri e separa quello più grande 
+    {
+        numero = atoi(argv[i]);
+        if (numero > max)
+            max = numero;
+    }
+    return max;              //ritorno al main il numero più grande per scriverlo 
+}
+
+void pari(int argc, char *argv[], int pari[], int *dim_numeri_pari)        //metodo che controlla i numeri pari 
+{
+    int numero, k = 0;
+    for (int i = 1; i < argc; i++)		//for che cicla i numeri e separa quelli pari
+    {
+        numero = atoi(argv[i]);			
+        if ((numero % 2) == 0)
+        {
+            pari[k] = numero;
+            k++;
+            (*dim_numeri_pari)++;
+        }
+    }
+}
+
+int main(int argc, char *argv[])                  
+{
+    int max = massimo(argc, argv);                      //assegno la variabile max al metodo massimo 
+    printf("Il numero più grande è: %d\n\n", max);	//scrivo a schermo il numero più grande
+
+    int numeri_pari[argc], dim_numeri_pari = 0;		//variabili numeri pari          
+    pari(argc, argv, numeri_pari, &dim_numeri_pari);	//richiamo il metodo che controlla i numeri pari 
+
+    printf("I numeri pari sono: \n");
+    for (int i = 0; i < dim_numeri_pari; i++)         
+    {
+        printf("%d\n", numeri_pari[i]);             //stampa a schermo i numeri pari 
+    }
+}
