@@ -2,8 +2,10 @@
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>
+#define DIM1 10
+#define DIM2 5
 
-int contiene_lettere(char stringa[])
+int VerificaLettere(char stringa[])
 {
     for (int i = 0; i < strlen(stringa) - 1; i++)
     {
@@ -15,7 +17,7 @@ int contiene_lettere(char stringa[])
     return 1;
 }
 
-int conta_frequenza(char stringa[], char carattere)
+int FrequenzaLettere(char stringa[], char carattere)
 {
     int frequenza = 0;
     for (int i = 0; i < strlen(stringa) - 1; i++)
@@ -28,7 +30,7 @@ int conta_frequenza(char stringa[], char carattere)
     return frequenza;
 }
 
-void crea_stringhe(char stringa[], char stringa_pari[], char stringa_dispari[])
+void Pari_Dispari(char stringa[], char stringa_pari[], char stringa_dispari[])
 {
     int k = 0, t = 0;
     for (int i = 0; i < strlen(stringa) - 1; i++)
@@ -46,20 +48,20 @@ void crea_stringhe(char stringa[], char stringa_pari[], char stringa_dispari[])
     }
 }
 
-int verifica_doppie(char stringa[])
+int Doppioni(char stringa[])
 {
-    int doppie = 0;
+    int doppioni = 0;
     for (int i = 1; i < strlen(stringa); i++)
     {
         if (stringa[i - 1] == stringa[i])
         {
-            doppie++;
+            doppioni++;
         }
     }
-    return doppie;
+    return doppioni;
 }
 
-int confronto_lunghezza(char stringa1[], char stringa2[])
+int LunghezzaStringhe(char stringa1[], char stringa2[])
 {
     if (strlen(stringa1) > strlen(stringa2))
         return 1;
@@ -84,146 +86,213 @@ void lettere_comuni(char stringa1[], char stringa2[], char comune[])
 
 int conta_vocali(char parola[])
 {
-    int vocali_parola = 0;
+    int vocali = 0;
     for (int i = 0; i < strlen(parola); i++)
     {
         if (parola[i] == 'a' || parola[i] == 'e' || parola[i] == 'i' || parola[i] == 'o' || parola[i] == 'u')
-            vocali_parola++;
+            vocali++;
     }
-    return vocali_parola;
+    return vocali;
 }
 
 int conta_consonanti(char parola[])
 {
-    int consonanti_parola = 0;
+    int consonanti= 0;
     for (int i = 0; i < strlen(parola); i++)
     {
         if (parola[i] != 'a' && parola[i] != 'e' && parola[i] != 'i' && parola[i] != 'o' && parola[i] != 'u')
-            consonanti_parola++;
+        {
+            consonanti++;
+        }    
     }
-    return consonanti_parola;
+    return consonanti;
 }
 
 int main(int argc, char *argv[])
 {
-    int dimensione = 10;
-    char stringa[dimensione];
-    char stringa2[dimensione];
-    char array_comune[dimensione];
-    char stringa_pari[dimensione / 2];
-    char stringa_dispari[dimensione / 2];
+    char stringa[DIM1];
+    char stringa2[DIM1];
+    char array_comune[DIM1];
+    char stringa_pari[DIM2];
+    char stringa_dispari[DIM2];
     char lettera;
-    int frequenza;
-    int i = 0;
+    int i = 0, scelta, doppioni, stringaInserita2 = 0, StringaLunga, Svocali1, Svocali2, consonanti1, consonanti2, freq;
+	
     printf("Inserisci una stringa:\n");
-    fgets(stringa, dimensione, stdin);
+    fgets(stringa, DIM1, stdin);
     for (int i = 0; i < strlen(stringa); i++)
     {
         stringa[i] = tolower(stringa[i]);
     }
-    int selezione, doppie, stringa2inserita = 0, piu_lunga, vocali1, vocali2, consonanti1, consonanti2;
+    
     do
     {
-        printf("\n1) Contiene solo lettere");
-        printf("\n2) Conta frequenza di una lettera");
-        printf("\n3) Crea due stringhe");
-        printf("\n4) Verifica le doppie");
-        printf("\n5) Inserisci un'altra stringa");
+        printf("\n1) Verifica se la stringa contiene solo lettere");
+        printf("\n2) Verificare la frequenza di una lettera");
+        printf("\n3) Crea due stringhe: Pari e Dispari");
+        printf("\n4) Verifica le doppie nella stringa");
+        printf("\n5) Inserire un'altra stringa");
         printf("\n6) Stringa più lunga");
-        printf("\n7) Quali lettere sono presenti in entrambi le stringhe");
-        printf("\n8) Quale contiene più vocali");
-        printf("\n9) Quale contiene più consonanti");
+        printf("\n7) Cerca lettere nelle due stringhe");
+        printf("\n8) Quale stringa contiene più vocali");
+        printf("\n9) Quale stringa contiene più consonanti");
+        printf("\nPremere 0 per terminare il programma");
         printf("\nSelezione: ");
-        scanf("%d", &selezione);
-        switch (selezione)
+        scanf("%d", &scelta);
+        switch (scelta)
         {
-        case 1:
-            printf("Contiene solo lettere: ");
-            if (contiene_lettere(stringa) == 1)
+            case 1:
             {
-                printf("si\n");
-            }
-            else
-                printf("no\n");
-            break;
-        case 2:
-            printf("Conta frequenza di una lettera\n");
-            printf("Inserisci lettera: ");
-            scanf("\n%c", &lettera);
-            frequenza = conta_frequenza(stringa, lettera);
-            printf("\nLa frequenza della lettera %c è di %d\n", lettera, frequenza);
-            break;
-        case 3:
-            printf("Crea due stringhe\n");
-            crea_stringhe(stringa, stringa_pari, stringa_dispari);
-            printf("\nStringa pari: %s", stringa_pari);
-            printf("\nStringa dispari: %s", stringa_dispari);
-            break;
-        case 4:
-            printf("Verifica le doppie");
-            doppie = verifica_doppie(stringa);
-            printf("\nCi sono %d coppie di doppie\n", doppie);
-            break;
-        case 5:
-            printf("\nInserisci una nuova stringa\n");
-            stringa2inserita = 1;
-            scanf("\n");
-            fgets(stringa2, dimensione, stdin);
-            break;
-        case 6:
-            if (stringa2inserita == 0)
-                printf("\nPrima inserire la seconda stringa\n");
-            else
-            {
-                piu_lunga = confronto_lunghezza(stringa, stringa2);
-                if (piu_lunga == -1)
-                    printf("\nLe due stringhe hanno la stessa lunghezza\n");
+                printf("Contiene solo lettere: ");
+                if (VerificaLettere(stringa) == 1)
+                {
+                    printf("La stringa contiene solo lettere\n");
+                }
                 else
-                    printf("\nLa stringa più lunga è la stringa %d\n", piu_lunga);
+                {
+                    printf("La stringa non contiene solo lettere\n");
+                }
+                
+                break;
             }
-            break;
-        case 7:
-            if (stringa2inserita == 0)
-                printf("\nPrima inserire la seconda stringa\n");
-            else
+            
+            case 2:
             {
-                printf("\nLettere in comune:\n");
-                lettere_comuni(stringa, stringa2, array_comune);
-                printf("Le lettere in comune sono: %s\n", array_comune);
+                printf("Conta frequenza di una lettera\n");
+                printf("Inserisci lettera: ");
+                scanf("\n%c", &lettera);
+                freq = FrequenzaLettere(stringa, lettera);
+                printf("\nLa frequenza della lettera %c è di %d\n", lettera, freq);
+                break;
+            }
+            
+            case 3:
+            {
+                printf("Pari e dispari\n");
+                Pari_Dispari(stringa, stringa_pari, stringa_dispari);
+                printf("\nStringa pari: %s", stringa_pari);
+                printf("\nStringa dispari: %s", stringa_dispari);
+                break;
+            }
+            
+            case 4:
+            {
+                printf("Verificare i doppioni presenti nella stringa");
+                doppioni = Doppioni(stringa);
+                printf("\nCi sono %d doppioni\n", doppioni);
+                break;
+            }
+            
+            case 5:
+            {
+                printf("\nInserisci una nuova stringa\n");
+                stringaInserita2= 1;
+                scanf("\n");
+                fgets(stringa2, DIM1, stdin);
+                break;
             }
 
-            break;
-        case 8:
-            if (stringa2inserita == 0)
-                printf("\nPrima inserire la seconda stringa\n");
-            else
+            
+            case 6:
             {
-                vocali1 = conta_vocali(stringa);
-                vocali2 = conta_vocali(stringa2);
-                if (vocali1 > vocali2)
-                    printf("\nLa prima stringa contiene più vocali\n");
-                else if (vocali2 > vocali1)
-                    printf("\nLa seconda stringa contiene più vocali\n");
+                if (stringaInserita2 == 0)
+                {
+                    printf("\nPrima inserire la seconda stringa\n");
+                }
+                
                 else
-                    printf("\nLe stringhe contengono la stessa quantità di vocali\n");
+                {
+                    StringaLunga = LunghezzaStringhe(stringa, stringa2);
+                    if (StringaLunga == -1)
+                    {
+                        printf("\nLe due stringhe hanno la stessa lunghezza\n");
+                    }
+                    
+                    else
+                    {
+                        printf("\nLa stringa più lunga è: %d\n", StringaLunga);
+                    } 
+                }
+                break;
             }
-            break;
-        case 9:
-            if (stringa2inserita == 0)
-                printf("\nPrima inserire la seconda stringa\n");
-            else
+            
+            case 7:
             {
-                consonanti1 = conta_consonanti(stringa);
-                consonanti2 = conta_consonanti(stringa2);
-                if (consonanti1 > consonanti2)
-                    printf("\nLa prima stringa contiene più consonanti\n");
-                else if (consonanti2 > consonanti1)
-                    printf("\nLa seconda stringa contiene più consonanti\n");
+                if (stringaInserita2 == 0)
+                {
+                    printf("\nInserire la seconda stringa\n");
+                }
+                
                 else
-                    printf("\nLe stringhe contengono la stessa quantità di consonanti\n");
+                {
+                    printf("\nLettere in comune:\n");
+                    lettere_comuni(stringa, stringa2, array_comune);
+                    printf("Le lettere in comune sono: %s\n", array_comune);
+                }
+
+                break;
             }
-            break;
-        default:
+            
+            case 8:
+            {
+                if (stringaInserita2 == 0)
+                {
+                    printf("\nInserire la seconda stringa\n");
+                }
+                
+                else
+                {
+                    Svocali1 = conta_vocali(stringa);
+                    Svocali2 = conta_vocali(stringa2);
+                    if (Svocali1 > Svocali2)
+                    {
+                        printf("\nLa prima stringa contiene più vocali\n");
+                    }
+                    
+                    else if (Svocali2 > Svocali1)
+                    {
+                        printf("\nLa seconda stringa contiene più vocali\n");
+                    }
+                    
+                    else
+                    {
+                        printf("\nLe stringhe contengono la stessa quantità di vocali\n");
+                    }
+                }
+                break;
+            }
+            
+            case 9:
+            {
+                if (stringaInserita2 == 0)
+                {
+                    printf("\nInserire la seconda stringa\n");
+                }
+                
+                else
+                {
+                    consonanti1 = conta_consonanti(stringa);
+                    consonanti2 = conta_consonanti(stringa2);
+                    if (consonanti1 > consonanti2)
+                    {
+                        printf("\nLa prima stringa contiene più consonanti\n");
+                    }
+                    
+                    else if (consonanti2 > consonanti1)
+                    {
+                        printf("\nLa seconda stringa contiene più consonanti\n");
+                    }
+                    
+                    else
+                    {
+                        printf("\nLe stringhe contengono la stessa quantità di consonanti\n");
+                    }
+                    
+                }
+                break;
+            }
+            
+            default:
             return 0;
             break;
         }
