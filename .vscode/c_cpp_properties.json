@@ -3,14 +3,14 @@
         {
             "name": "Win32",
             "includePath": [
-                ""
+                "C:\\MinGW\\include"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "C:\\MinGW\bin\\gcc.exe",
+            //"compilerPath": 
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-x86"
