@@ -29,18 +29,20 @@ void stampa (int n1, int vett1[])
 
 void menu ()
 { 
-  printf("1) Somma e media\n");
-  printf("2) Stampa numeri pari\n");
-  printf("3) Stampa numeri dispari\n");
-  printf("4) Vettore invertito\n");
-  printf("5) Cerca numero\n");
-  printf("6) Ordina Vettore\n");
-  printf("7) Elimina numero versione 1\n");
-  printf("8) Elimina numero versione 2\n");
-  printf("9) Alterna Vettore \n");
-  printf("10)Stampa Vettore\n");
-  printf("Premere 11 per uscire\n");
-  printf("Inserisci una scelta:\n");
+    printf("\n-----------------------------------\n");
+    printf("1) Somma e media\n");
+    printf("2) Stampa numeri pari\n");
+    printf("3) Stampa numeri dispari\n");
+    printf("4) Vettore invertito\n");
+    printf("5) Cerca numero\n");
+    printf("6) Ordina Vettore\n");
+    printf("7) Elimina numero versione 1\n");
+    printf("8) Elimina numero versione 2\n");
+    printf("9) Alterna Vettore \n");
+    printf("10) Stampa Vettore\n");
+    printf("Premere 11 per uscire\n");
+    printf("-----------------------------------\n");
+    printf("Inserisci una scelta:\n");
 }
 
 void inverti (int n1, int vett1[])
@@ -245,7 +247,6 @@ int main()
         switch (b)
 	    {
             case 1: 
-		    printf("Somma e media\n");
 		    printf("La media e': %f \n",calcola(a,vett));
 		    break; 
 		    case 2: 
