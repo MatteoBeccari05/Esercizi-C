@@ -28,17 +28,17 @@ typedef struct
 void* stampaVideo(void* par)   //la firma è obbligatoriamente così
 {
     printf("\n----------------------------------------\n");
-    Studente *st1 = (Studente *)par;
+    Studente st1 = *(Studente *)par;
     printf("Dati dello studente:\n");
-    printf("Nome: %s\n", st1->nome);
-    printf("Cognome: %s\n", st1->cognome);
-    printf("Media: %.2f\n", st1->media);
+    printf("Nome: %s\n", st1.nome);
+    printf("Cognome: %s\n", st1.cognome);
+    printf("Media: %.2f\n", st1.media);
     return (void*)0;
 }
 
 void* stampaFile(void* par)  
 {
-    Studente *st1 = (Studente *)par;
+    Studente st1 = *(Studente *)par;
     FILE *file = fopen("destinazione.txt", "w");
     if (file == NULL) 
     {
@@ -46,9 +46,9 @@ void* stampaFile(void* par)
         pthread_exit(NULL);
     }
     fprintf(file, "Dati dello studente:\n");
-    fprintf(file, "Nome: %s\n", st1->nome);
-    fprintf(file, "Cognome: %s\n", st1->cognome);
-    fprintf(file, "Media: %.2f\n", st1->media);
+    fprintf(file, "Nome: %s\n", st1.nome);
+    fprintf(file, "Cognome: %s\n", st1.cognome);
+    fprintf(file, "Media: %.2f\n", st1.media);
     fclose(file);
     return (void*)0;
 }
