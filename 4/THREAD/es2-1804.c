@@ -24,12 +24,12 @@ typedef struct
 
 void* PrimaMeta(void* par)   //la firma è obbligatoriamente così
 {
-    Ricerca *r1 = (Ricerca *)par;
+    Ricerca r1 = *(Ricerca *)par;
     for(int i = 0; i<SIZE/2; i++)
     {
-        if(r1->array[i] == r1->numeroDaCercare)
+        if(r1.array[i] == r1.numeroDaCercare)
         {
-            printf("Il numero %d è stato trovato nella posizione %d\n", r1->numeroDaCercare, i);
+            printf("Il numero %d è stato trovato nella prima parte dell'array in posizione %d\n", r1.numeroDaCercare, i);
         }
     }
     return (void*)0;
@@ -37,12 +37,12 @@ void* PrimaMeta(void* par)   //la firma è obbligatoriamente così
 
 void* SecondaMeta(void* par)  
 {
-    Ricerca *r1 = (Ricerca *)par;
+    Ricerca r1 = *(Ricerca *)par;
     for(int i = SIZE/2; i<SIZE; i++)
     {
-        if(r1->array[i] == r1->numeroDaCercare)
+        if(r1.array[i] == r1.numeroDaCercare)
         {
-            printf("Il numero %d è stato trovato nella posizione %d\n", r1->numeroDaCercare, i);
+            printf("Il numero %d è stato trovato nella seconda parte dell'array inposizione %d\n", r1.numeroDaCercare, i);
         }
     }
     return (void*)0;
