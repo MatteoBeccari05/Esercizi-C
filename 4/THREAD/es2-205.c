@@ -8,7 +8,8 @@
 #include <pthread.h>
 #include <time.h>
 
-#define BUFFER_SIZE 1024
+#define BUFFER_SIZE 64
+#define BUFFER_DIM 1024
 
 //gcc lezione1104.c -o saluti -lpthread => per compilare il programma
 //thread POSIX (in linux è lo standard)
@@ -18,31 +19,53 @@
 
 typedef struct 
 {
-    FILE *sorgente;
-    FILE *destinazione;
-} StructFile;
+    unsigned char buffer[BUFFER_DIM];
+    int n;
+} BUFFER;
 
-void *Scrittura(void *par) 
+BUFFER f1[BUFFER_SIZE];
+int readIndex = 0;
+int writeIndex = 0;
+int block;
+int eof = 0;
+
+void *Lettura(void* par) 
 {
-    StructFile *r1 = (StructFile *)par;
-    char buffer[BUFFER_SIZE];
-    size_t n;
-
-    // Leggi dal file di origine e scrivi nel file di destinazione
-    while ((n = fread(buffer, 1, BUFFER_SIZE, r1->sorgente)) > 0) 
+    FILE *file = (FILE *)par;
+    while(!feof(file))
     {
-        fwrite(buffer, 1, n, r1->destinazione);
+        while(block >= BUFFER_SIZE);
+        int n = fread(f1[writeIndex].buffer, 1, BUFFER_DIM, file);
+        if(n>0)
+        {
+            f1[writeIndex].n = n;
+            writeIndex = (writeIndex + 1) % BUFFER_SIZE;
+            block++;
+        }
     }
-
-    fclose(r1->sorgente); // Chiudi il file di origine
-    fclose(r1->destinazione); // Chiudi il file di destinazione
-    return NULL;
+    eof = 1;
 }
+
+void *Scrittura(void* par) 
+{
+    FILE *file = (FILE *)par;
+    while (eof == 1 || block > 0)
+    {
+        if(block>0)
+        {
+            fwrite(f1[readIndex].buffer, 1, f1[readIndex].n, file);
+            readIndex = (readIndex + 1) % BUFFER_SIZE;
+            block--;
+        }
+    }
+}
+
+
 
 int main(int argc, char *argv[]) 
 {
-    pthread_t primo;
-    StructFile r1;
+    pthread_t lettura, scrittura;
+    FILE *dest, *origine;
 
     if (argc != 3) 
     {
@@ -51,25 +74,31 @@ int main(int argc, char *argv[])
     }
 
     // Apertura dei file di origine e di destinazione
-    r1.sorgente = fopen(argv[1], "r");
-    if (r1.sorgente == NULL) 
+    origine = fopen(argv[1], "r");
+    if (origine == NULL) 
     {
         printf("Errore apertura file d'origine\n");
         exit(1);
     }
 
-    r1.destinazione = fopen(argv[2], "w");
-    if (r1.destinazione == NULL) 
+    dest = fopen(argv[2], "w");
+    if (dest == NULL) 
     {
         printf("Errore apertura file di destinazione\n");
-        fclose(r1.sorgente); // Chiudi il file di origine se l'apertura del file di destinazione fallisce
+        fclose(dest); // Chiudi il file di origine se l'apertura del file di destinazione fallisce
+        fclose(origine);
         exit(1);
     }
 
     // Creazione del thread per la scrittura
-    pthread_create(&primo, NULL, &Scrittura, (void *)&r1);
+    pthread_create(&lettura, NULL, &Lettura, (void*) &origine);
+    pthread_create(&scrittura, NULL, &Scrittura, (void*) &dest);
 
-    pthread_join(primo, NULL);
+    pthread_join(lettura, NULL);
+    pthread_join(scrittura, NULL);
+
+    fclose(dest); // Chiudi il file di origine se l'apertura del file di destinazione fallisce
+    fclose(origine);
 
     printf("Copia completata\n");
 

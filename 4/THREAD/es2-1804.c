@@ -17,24 +17,34 @@
 3 - crea un altro thread per ricercare il numero otto nella seconda metà dell'array.
 Il thread che trova il numero otto deve stampare la posizione che occupa nell'array.*/
 
-//il programma esegue la ricerca con due thread ma con un solo metodo
 
 typedef struct
 {
     int numeroDaCercare;
     int array[10];
-    int inizio;
-    int fine;
 } Ricerca;
 
 void* PrimaMeta(void* par)   //la firma è obbligatoriamente così
 {
-    Ricerca r1 = *(Ricerca *)par;
-    for(int i = r1.inizio; i<r1.fine; i++)
+    Ricerca *r1 = (Ricerca *)par;
+    for(int i = 0; i<SIZE/2; i++)
     {
-        if(r1.array[i] == r1.numeroDaCercare)
+        if(r1->array[i] == r1->numeroDaCercare)
         {
-            printf("Il numero %d è stato trovato in posizione %d\n", r1.numeroDaCercare, i+1);
+            printf("Il numero %d è stato trovato nella posizione %d\n", r1->numeroDaCercare, i);
+        }
+    }
+    return (void*)0;
+}
+
+void* SecondaMeta(void* par)  
+{
+    Ricerca *r1 = (Ricerca *)par;
+    for(int i = SIZE/2; i<SIZE; i++)
+    {
+        if(r1->array[i] == r1->numeroDaCercare)
+        {
+            printf("Il numero %d è stato trovato nella posizione %d\n", r1->numeroDaCercare, i);
         }
     }
     return (void*)0;
@@ -55,15 +65,11 @@ int main()
     printf("Inserire il numero da ricercare: ");
     scanf("%d", &r1.numeroDaCercare);
 
-
-    r1.inizio = 0;
-    r1.fine = SIZE/2;
     pthread_create(&primo, NULL, &PrimaMeta, (void*)&r1);   //creo un thread
-    pthread_join(primo, NULL);
+    pthread_create(&secondo, NULL, &SecondaMeta, (void*) &r1);   //creo un thread
 
-    r1.inizio = SIZE/2;
-    r1.fine = SIZE;
-    pthread_create(&secondo, NULL, &PrimaMeta, (void*) &r1);   //creo un thread
+    //Attendo che i 2 thread terminino la loro esecuzione
+    pthread_join(primo, NULL);
     pthread_join(secondo, NULL);
 
     return 0;
