@@ -79,7 +79,7 @@ int leggiLibriDaFile(const char *filename, Libro libri[], Categoria categorie[],
     return numLibri; // Restituisci il numero di libri letti
 }
 
-/// @brief Visualizza a schermo i libri
+/// @brief Visualizza a schermo tutti i libri
 /// @param libri Array di libri
 /// @param n Numero di libri
 void VisualizzaTuttiLibri(Libro libri[], int n) 
@@ -159,13 +159,13 @@ int main()
         scelta = Menu();
         switch (scelta) 
         {
-            case 1:
+            case 1:  //visualizzo tutti i libri
             {
                 VisualizzaTuttiLibri(libri, numLibri);
                 break;
             }
             
-            case 2:
+            case 2:    //visualizza tutti i libri di una determinata categoria
             {
                 VisualizzaCategorie(categorie, numeroCategorie);
                 printf("Inserisci il numero della categoria: ");
