@@ -35,21 +35,22 @@ int leggiLibriDaFile(const char *filename, Libro libri[], Categoria categorie[],
 {
     char buffer[BUFFER_DIM];
     FILE *file = fopen(filename, "r");
-    if (!file) 
+    if (!file) //controllo che il file si apra correttamente
     {
         perror("Errore nell'apertura del file");
         return -1; // Restituisci -1 in caso di errore
     }
 
-    // Ignora l'intestazione
+    // Ignoro la prima riga del file csv (dove è presente l'intestazione)
     fgets(buffer, sizeof(buffer), file);
     
     int numLibri = 0;
 
-    while (fgets(buffer, sizeof(buffer), file)) 
+    while (fgets(buffer, sizeof(buffer), file)) //leggo finchè non finisce il file
     {
         Libro libro;
-        sscanf(buffer, "%99[^,],%99[^,],%d,%f,%99[^\n]", libro.titolo, libro.autore, &libro.anno, &libro.prezzo, libro.categoria);
+        //leggo una riga dal file csv inserendo i vari paramentri nella variabile libro
+        sscanf(buffer, "%99[^,],%99[^,],%d,%f,%99[^\n]", libro.titolo, libro.autore, &libro.anno, &libro.prezzo, libro.categoria); 
 
         // Aggiungi il libro all'array di libri
         libri[numLibri++] = libro;
@@ -61,6 +62,7 @@ int leggiLibriDaFile(const char *filename, Libro libri[], Categoria categorie[],
             if (strcmp(categorie[i].nome, libro.categoria) == 0) 
             {
                 categorie[i].libri[categorie[i].numLibri++] = libro;
+                //se la categoria viene trovata imposto trovato a 1
                 trovato = 1;
                 break;
             }
@@ -69,12 +71,14 @@ int leggiLibriDaFile(const char *filename, Libro libri[], Categoria categorie[],
         // Se la categoria non esiste, la creo
         if (!trovato && *numCategorie < CATEGORIE) 
         {
+            //se la categoria non esiste la creo
             strcpy(categorie[*numCategorie].nome, libro.categoria);
             categorie[*numCategorie].libri[0] = libro;
             categorie[*numCategorie].numLibri = 1;
             (*numCategorie)++;
         }
     }
+    //chiudo il file csv quando finisco di leggere tutti i dati
     fclose(file);
     return numLibri; // Restituisci il numero di libri letti
 }
@@ -88,8 +92,10 @@ void VisualizzaTuttiLibri(Libro libri[], int n)
     printf("| Titolo                                             | Autore               | Anno | Prezzo | Categoria             |\n");
     printf("|----------------------------------------------------|----------------------|------|--------|-----------------------|\n");
 
+    //creo una visualizzazione tabellare
     for (int i = 0; i < n; i++) 
     {
+                //spaziature
         printf("| %-50s | %-20s | %-4d | %-6.2f | %-20s |\n", libri[i].titolo, libri[i].autore, libri[i].anno, libri[i].prezzo, libri[i].categoria);
     }
 
@@ -108,7 +114,7 @@ int Menu()
     printf("\n============================================================\n");
     printf("Scelta: ");
     scanf("%d", &scelta);
-    return scelta;
+    return scelta; //ritorno la scelta dell'utente
 }
 
 /// @brief Stampa i libri di una determinata categoria
@@ -119,9 +125,11 @@ void VisualizzaLibriPerCategoria(Categoria categoria)
     printf("|----------------------------------------------------|----------------------|------|--------|\n");
     printf("| Titolo                                             | Autore               | Anno | Prezzo |\n");
     printf("|----------------------------------------------------|----------------------|------|--------|\n");
-
+    
+    //creo una visualizzazione di tipo tabellare
     for (int i = 0; i < categoria.numLibri; i++) 
     {
+                //spaziature 
         printf("| %-50s | %-20s | %-4d | %-6.2f |\n", categoria.libri[i].titolo, categoria.libri[i].autore, categoria.libri[i].anno, categoria.libri[i].prezzo);
     }
 
@@ -133,6 +141,7 @@ void VisualizzaLibriPerCategoria(Categoria categoria)
 /// @param numCategorie Numero delle categorie
 void VisualizzaCategorie(Categoria categorie[], int numCategorie) 
 {
+    //visualizzo le categorie in modo che l'utente riesca a scieglierne una per visualizzare i libri di una determinata categoria
     printf("\nCategorie disponibili:\n");
     for (int i = 0; i < numCategorie; i++) 
     {
@@ -147,7 +156,7 @@ int main()
     const char *filename = "libri.csv"; // Nome del file CSV
     int scelta;
     int numeroCategorie = 0;
-    int numLibri = leggiLibriDaFile(filename, libri, categorie, &numeroCategorie);
+    int numLibri = leggiLibriDaFile(filename, libri, categorie, &numeroCategorie);  //leggo i libri dal file csv
 
     if (numLibri < 0) 
     {
@@ -170,6 +179,7 @@ int main()
                 VisualizzaCategorie(categorie, numeroCategorie);
                 printf("Inserisci il numero della categoria: ");
                 int n;
+                //leggo il numero di categoria scelto dall'utente
                 scanf("%d", &n);
                 if (n > 0 && n <= numeroCategorie) 
                 {
@@ -188,7 +198,9 @@ int main()
             }
                 
             default:
+            {
                 printf("Scelta non valida.\n");
+            }    
         }
 
     } while (scelta < 3);
