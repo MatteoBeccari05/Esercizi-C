@@ -30,14 +30,14 @@ int main()
     int socketfd, soa, fromlen=sizeof(servizio);
     char str[DIM],stringaInMaiusc[DIM];
 
-    servizio.sin_family=AF_INET;
-    servizio.sin_addr.s_addr=htonl(INADDR_ANY);
-    servizio.sin_port=htons(SERVERPORT);
-    socketfd=socket(AF_INET,SOCK_STREAM,0);
+    servizio.sin_family = AF_INET;
+    servizio.sin_addr.s_addr = htonl(INADDR_ANY);
+    servizio.sin_port = htons(SERVERPORT);
+    socketfd = socket(AF_INET,SOCK_STREAM,0);
 
-    bind(socketfd,(struct sockaddr*)&servizio,sizeof(servizio));
+    bind(socketfd, (struct sockaddr*)&servizio, sizeof(servizio));
 
-    listen(socketfd,10);// può attendere fino a 10 client
+    listen(socketfd, 10);// può attendere fino a 10 client
 
     while(1)
     {
@@ -45,17 +45,13 @@ int main()
 
         fflush(stdout);
 
-        soa=accept(socketfd,(struct sockaddr*)&addr_remoto,&fromlen);
+        soa = accept(socketfd, (struct sockaddr*)&addr_remoto, &fromlen);
         //legge dal client
-        read(soa,str,sizeof(str));
-        
+        read(soa, str, sizeof(str));
         
         strcpy(stringaInMaiusc, str);
         Maiuscolo(stringaInMaiusc);
-        
         write(soa, stringaInMaiusc, strlen(stringaInMaiusc));
-        
         close(soa);
-
     }
 }
