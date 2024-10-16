@@ -14,7 +14,7 @@
 
 int main(int argc,char** argv)
 {
-       
+
     struct sockaddr_in servizio;
     int socketfd;// identificatore della socket
     char str1[DIM],str2[DIM];// dati dei socket
