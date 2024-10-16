@@ -1,40 +1,304 @@
-title,author,year,price,category
-Il nome della rosa,Umberto Eco,1980,12.22,Giallo
-Divina Commedia,Dante Alighieri,1320,23.01,Classico
-I Promessi Sposi,Alessandro Manzoni,1827,22.19,Classico
-La coscienza di Zeno,Italo Svevo,1923,5.99,Romanzo
-Il Gattopardo,Guseppe Tomasi di Lampedusa,1958,26.69,Narrativa storica
-Se questo è un uomo,Primo Levi,1947,18.48,Memoria
-Il deserto dei tartari,Dino Buzzati,1940,10.81,Romanzo
-La luna e i falò,Cesare Pavese,1950,13.44,Romanzo
-Siddharta,Hermann Hesse,1922,28.2,Filosofico
-Il piccolo principe,Antoine de Saint-Exupéry,1943,29.28,Letteratura per bambini
-La metamorfosi,Franz Kafka,1915,14.49,Classico
-Fahrenheit 451,Ray Bradbury,1953,24.18,Distopico
-1984,George Orwell,1949,9.57,Distopico
-Il grande Gatsby,F. Scott Fitzgerald,1925,28.96,Classico
-Moby Dick,Herman Melville,1851,14.36,Classico
-Orgoglio e pregiudizio,Jane Austen,1813,14.6,Romano
-Il ritratto di Dorian Gray,Oscar Wilde,1890,13.75,Classico
-Guerra e pace,Lev Tolstoj,1869,20.24,Narrativa storica
-Anna Karenina,Lev Tolstoj,1877,13.05,Classico
-Il conte di Montecristo,Alexandre Dumas,1844,5.93,Avventura
-Don Chisciotte della Mancia,Miguel de Cervantes,1605,29.27,Classico
-Le avventure di Sherlock Holmes,Arthur Conan Doyle,1892,27.61,Giallo
-Il processo,Franz Kafka,1925,24.12,Romanzo
-La nausea,Jean-Paul Sartre,1938,13.14,Filosofico
-La peste,Albert Camus,1947,27.82,Filosofico
-Il lupo della steppa,Hermann Hesse,1927,28.63,Romanzo
-Il maestro e Margherita,Michail Bulgakov,1966,23.23,Fantasy
-Lolita,Vladimir Nabokov,1955,15.25,Controverso
-L'amore ai tempi del colera,Gabriel Garcia Marquez,1985,16.86,Romano
-Cent'anni di solitudine,Gabriel Garcia Marquez,1967,28.7,Realismo magico
-Cime tempestose,Emily Brontë,1847,6.88,Classico
-Jane Eyre,Charlotte Brontë,1847,20.48,Classico
-Il richiamo della foresta,Jack London,1903,8.31,Avventura
-Viaggio al centro della Terra,Jules Verne,1864,25.68,Fantascienza
-Dracula,Bram Stoker,1897,26.9,Horror
-Frankenstein,Mary Shelley,1818,10.81,Horror
-Robinson Crusoe,Daniel Defoe,1719,23.98,Avventura
-La tempesta,William Shakespeare,1611,24.56,Opera teatrale
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+#define DIM 100
+#define NUMERO_LIBRI 100
+#define BUFFER_DIM 1024
+#define CATEGORIE 10
+
+/// @brief Struttura di un libro
+typedef struct Libro 
+{
+    char titolo[DIM];
+    char autore[DIM];
+    int anno;
+    float prezzo;
+    char categoria[DIM];
+} Libro;
+
+/// @brief Struttura di una categoria di libri
+typedef struct Categoria 
+{
+    char nome[DIM];
+    Libro libri[NUMERO_LIBRI];
+    int numLibri;
+} Categoria;
+
+/// @brief Legge i libri dal file CSV e li inserisce in un array di libri e categorie
+/// @param filename Nome del file da cui leggere
+/// @param libri Array di libri
+/// @param categorie Array di categorie
+/// @param numCategorie Puntatore al numero di categorie presenti nel catalogo
+/// @return Numero di libri letti
+int Lettura_Libri(const char *nome_file, Libro libri[], Categoria categorie[], int *numCategorie) 
+{
+    char buffer[BUFFER_DIM];
+    int numLibri = 0;
+    FILE *file = fopen(nome_file, "r");
+    if (!file) 
+    {
+        printf("Errore nell'apertura del file");
+        exit(0);
+    }
+
+    // Ignora l'intestazione
+    fgets(buffer, sizeof(buffer), file);
+
+    while (fgets(buffer, sizeof(buffer), file)) 
+    {
+        Libro libro;
+        sscanf(buffer, "%99[^,],%99[^,],%d,%f,%99[^\n]", libro.titolo, libro.autore, &libro.anno, &libro.prezzo, libro.categoria);
+
+        // Aggiungi il libro all'array di libri
+        libri[numLibri++] = libro;
+
+        // Controlla se la categoria esiste già
+        int trovato = 0;
+        for (int i = 0; i < *numCategorie; i++) 
+        {
+            if (strcmp(categorie[i].nome, libro.categoria) == 0) 
+            {
+                categorie[i].libri[categorie[i].numLibri++] = libro;
+                trovato = 1;
+                break;
+            }
+        }
+
+        // Se la categoria non esiste, la creo
+        if (!trovato && *numCategorie < CATEGORIE) 
+        {
+            strcpy(categorie[*numCategorie].nome, libro.categoria);
+            categorie[*numCategorie].libri[0] = libro;
+            categorie[*numCategorie].numLibri = 1;
+            (*numCategorie)++;
+        }
+    }
+    fclose(file);
+    return numLibri; // Restituisci il numero di libri letti
+}
+
+/// @brief Visualizza a schermo tutti i libri
+/// @param libri Array di libri
+/// @param n Numero di libri
+void Visualizzazione_Catalogo_Completo(Libro libri[], int numeroLibri) 
+{
+    printf("|--------------------------------------------------------------|--------------------------------|------|--------|-----------------------|\n");
+    printf("| Titolo                                                       | Autore                         | Anno | Prezzo | Categoria             |\n");
+    printf("|--------------------------------------------------------------|--------------------------------|------|--------|-----------------------|\n");
+
+    for (int i = 0; i < numeroLibri; i++) 
+    {
+        printf("| %-60s | %-30s | %-4d | %-6.2f | %-20s |\n", libri[i].titolo, libri[i].autore, libri[i].anno, libri[i].prezzo, libri[i].categoria);
+    }
+
+    printf("|--------------------------------------------------------------|--------------------------------|------|--------|-----------------------|\n");
+}
+
+/// @brief Stampa il menù di scelta
+/// @return Ritorna la scelta dell'utente
+int StampaMenu() 
+{
+    int scelta;
+    printf("\n|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||");
+    printf("\n1)  Visualizza tutti i libri");
+    printf("\n2)  Visualizza libri per categoria");
+    printf("\n3)  Cerca il titolo di un libro");
+    printf("\n4)  Modifica la categoria di un libro");
+    printf("\n5)  Esci dal programma");
+    printf("\n|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||\n");
+    printf("Scelta: ");
+    scanf("%d", &scelta);
+    return scelta;
+}
+
+/// @brief Stampa i libri di una determinata categoria
+/// @param categorie Struttura di categorie
+/// @param numCategorie Numero delle categorie
+void Visualizzazione_Per_Categoria(Categoria categorie[], int numCategorie) 
+{
+    char nome_categoria[DIM];
+    printf("Inserisci il nome della categoria: ");
+    getchar(); // Per consumare il newline rimasto
+    fgets(nome_categoria, sizeof(nome_categoria), stdin);
+    nome_categoria[strcspn(nome_categoria, "\n")] = 0; // Rimuovere il newline
+
+    int trovata = 0;
+    for (int i = 0; i < numCategorie; i++) 
+    {
+        if (strcasecmp(categorie[i].nome, nome_categoria) == 0) 
+        {
+            trovata = 1;
+            printf("\nLibri nella categoria '%s':\n", categorie[i].nome);
+            printf("|--------------------------------------------------------------|--------------------------------|------|--------|\n");
+            printf("| Titolo                                                       | Autore                         | Anno | Prezzo |\n");
+            printf("|--------------------------------------------------------------|--------------------------------|------|--------|\n");
+
+            for (int j = 0; j < categorie[i].numLibri; j++) 
+            {
+                printf("| %-60s | %-30s | %-4d | %-6.2f |\n", categorie[i].libri[j].titolo, categorie[i].libri[j].autore, categorie[i].libri[j].anno, categorie[i].libri[j].prezzo);
+            }
+
+            printf("|--------------------------------------------------------------|--------------------------------|------|--------|\n");
+            break;
+        }
+    }
+
+    if (!trovata) 
+    {
+        printf("Categoria non trovata: '%s'\n", nome_categoria);
+    }
+}
+
+
+/// @brief Visualizza le caratteristiche di un libro dato il titolo
+/// @param libri Array di libri
+/// @param numLibri Numero di libri
+void VisualizzazionePerTitolo(Libro libri[], int numLibri) 
+{
+    char titolo_da_cercare[DIM];
+    printf("Inserisci il titolo del libro: ");
+    getchar(); // Per consumare il newline rimasto
+    fgets(titolo_da_cercare, sizeof(titolo_da_cercare), stdin);
+    titolo_da_cercare[strcspn(titolo_da_cercare, "\n")] = 0; // Rimuovere il newline
+
+    int trovato = 0;
+    for (int i = 0; i < numLibri; i++) 
+    {
+        if (strcasecmp(libri[i].titolo, titolo_da_cercare) == 0) // Ignora maiuscole e minuscole
+        {
+            printf("|--------------------------------------------------------------|--------------------------------|------|--------|-----------------------|\n");
+            printf("| Titolo                                                       | Autore                         | Anno | Prezzo | Categoria             |\n");
+            printf("|--------------------------------------------------------------|--------------------------------|------|--------|-----------------------|\n");
+            printf("| %-60s | %-30s | %-4d | %-6.2f | %-20s |\n", libri[i].titolo, libri[i].autore, libri[i].anno, libri[i].prezzo, libri[i].categoria);
+            printf("|--------------------------------------------------------------|--------------------------------|------|--------|-----------------------|\n");
+            trovato = 1;
+            break;
+        }
+    }
+
+    if (!trovato) //se non trovo il libro desiderato
+    {
+        printf("Nessun libro trovato con il titolo '%s'\n", titolo_da_cercare);
+    }
+}
+
+/// @brief Modifica la categoria di un libro dato il titolo
+/// @param libri Array di libri
+/// @param numLibri Numero di libri
+/// @param categorie Array di categorie
+/// @param numCategorie Puntatore al numero di categorie
+void ModificaCategoria(Libro libri[], int numLibri, Categoria categorie[], int *numCategorie) 
+{
+    char titolo_da_modificare[DIM];
+    printf("Inserisci il titolo del libro: ");
+    getchar(); // Per consumare il newline rimasto
+    fgets(titolo_da_modificare, sizeof(titolo_da_modificare), stdin);
+    titolo_da_modificare[strcspn(titolo_da_modificare, "\n")] = 0; // Rimuovere il newline
+
+    int trovato = 0;
+    for (int i = 0; i < numLibri; i++) 
+    {
+        if (strcasecmp(libri[i].titolo, titolo_da_modificare) == 0) 
+        {
+            trovato = 1;
+
+            // Stampa la categoria attuale
+            printf("Categoria attuale: %s\n", libri[i].categoria);
+
+            // Chiedi la nuova categoria
+            printf("Inserisci la nuova categoria: ");
+            fgets(libri[i].categoria, DIM, stdin);
+            libri[i].categoria[strcspn(libri[i].categoria, "\n")] = 0; // Rimuovere il newline
+
+            // Controlla se la nuova categoria esiste già
+            int categoriaEsistente = 0;
+            for (int j = 0; j < *numCategorie; j++) 
+            {
+                if (strcmp(categorie[j].nome, libri[i].categoria) == 0) 
+                {
+                    categoriaEsistente = 1;
+                    // Aggiungi il libro a questa categoria
+                    categorie[j].libri[categorie[j].numLibri++] = libri[i];
+                    break;
+                }
+            }
+
+            // Se la categoria non esiste, la creo
+            if (!categoriaEsistente && *numCategorie < CATEGORIE) 
+            {
+                strcpy(categorie[*numCategorie].nome, libri[i].categoria);
+                categorie[*numCategorie].libri[0] = libri[i];
+                categorie[*numCategorie].numLibri = 1;
+                (*numCategorie)++;
+            }
+
+            printf("Categoria aggiornata con successo.\n");
+            break;
+        }
+    }
+
+    if (!trovato) 
+    {
+        printf("Nessun libro trovato con il titolo '%s'\n", titolo_da_modificare);
+    }
+}
+
+int main(int argc, char *argv[]) 
+{
+    Categoria categorie[CATEGORIE] = {0};
+    Libro libri[NUMERO_LIBRI];
+    const char *nome_file = argv[1]; // Nome del file CSV
+    int scelta;
+    int numeroCategorie = 0;
+    int numLibri = Lettura_Libri(nome_file, libri, categorie, &numeroCategorie);
+
+    if (numLibri < 0) 
+    {
+        exit(0); // Uscita se c'è stato un errore nella lettura
+    }
+
+    do 
+    {
+        scelta = StampaMenu();
+        switch (scelta) 
+        {
+            case 1:  //visualizzo tutti i libri
+            {
+                Visualizzazione_Catalogo_Completo(libri, numLibri);
+                break;
+            }
+            
+            case 2:    //visualizza tutti i libri di una determinata categoria
+            {
+                Visualizzazione_Per_Categoria(categorie, numeroCategorie);
+                break;
+            }
+
+            case 3:   //visualizza un libro con titolo scelto dall'utente
+            {
+                VisualizzazionePerTitolo(libri, numLibri);
+                break;
+            }
+                
+            case 4:
+            {
+                ModificaCategoria(libri, numLibri, categorie, &numeroCategorie);
+                break;
+            }
+
+            case 5:
+            {
+                printf("Uscita dal programma.\n");
+                break;
+            }
+                
+            default:
+                printf("Scelta non valida.\n");
+        }
+
+    } while (scelta < 5);
+
+    return 0;
+
+}

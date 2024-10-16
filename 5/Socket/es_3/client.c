@@ -14,5 +14,24 @@
 
 int main()
 {
+    struct sockaddr_in servizio;
+    int socketID;
+    char str1[DIM],str2[DIM];
 
+    servizio.sin_family=AF_INET;
+    servizio.sin_addr.s_addr=htonl(INADDR_ANY);
+    servizio.sin_port=htons(SERVERPORT);
+    socketID = socket(AF_INET,SOCK_STREAM,0);
+
+    connect(socketID, (struct sockaddr*)&servizio, sizeof(servizio));
+
+    printf("Inserisci la stringa\n");
+    scanf("%s",str1);
+    write(socketID,str1,sizeof(str1));
+
+    read(socketID,str1,sizeof(str1));
+    printf("\nStringhe ricevute: %s\n",str1);
+
+    close(socketID);
+    return 0;
 }
