@@ -1,0 +1,4 @@
+Scrivere Un applicazione Client Server in C 
+in cui il server dopo aver ricevuto una stringa 
+dal Client restituisce (sempre al Client) il numero delle 
+vocali e delle consonanti contenute nella stringa stessa.
