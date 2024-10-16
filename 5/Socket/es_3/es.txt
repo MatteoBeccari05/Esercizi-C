@@ -1,0 +1,3 @@
+Scrivere Un applicazione Client Server in C o 
+in cui il server dopo aver ricevuto una stringa dal 
+Client la restituisce (sempre al Client) la stringa in maiuscolo
