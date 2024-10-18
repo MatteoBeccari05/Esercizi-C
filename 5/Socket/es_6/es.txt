@@ -1,0 +1,5 @@
+Esercizio 4
+Scrivere il codice in C, di un applicazione Socket CLIENT-SERVER in cui il server 
+riceve in input 1 stringa e un carattere,e dopo aver effettuato gli eventuali 
+ed opportuni controlli (se necessari), rispedisce al Client il
+numero di occorrenze del carattere nella stringa.
