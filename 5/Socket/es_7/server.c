@@ -43,7 +43,7 @@ char* ordina_stringa(const char *str)
     }
 
     risultato[n] = '\0';  // aggiungi il terminatore di stringa
-    return risultato;      // restituisce la stringa ordinata
+    return risultato; 
 }
 
 int main()
