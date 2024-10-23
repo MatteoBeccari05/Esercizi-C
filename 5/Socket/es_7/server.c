@@ -25,16 +25,16 @@ char* ordina_stringa(const char *str)
         return NULL; // Controllo per l'allocazione della memoria
     }
 
-    strcpy(risultato, str);  // Copia la stringa originale
+    strcpy(risultato, str);  // copia la stringa originale
 
-    // Ordinamento semplice (Bubble Sort)
+    //bubble Sort
     for (int i = 0; i < n - 1; i++) 
     {
         for (int j = 0; j < n - i - 1; j++) 
         {
             if (risultato[j] > risultato[j + 1]) 
             {
-                // Scambia i caratteri
+                // scambia i caratteri
                 char temp = risultato[j];
                 risultato[j] = risultato[j + 1];
                 risultato[j + 1] = temp;
@@ -42,8 +42,8 @@ char* ordina_stringa(const char *str)
         }
     }
 
-    risultato[n] = '\0';  // Aggiungi il terminatore di stringa
-    return risultato;      // Restituisce la stringa ordinata
+    risultato[n] = '\0';  // aggiungi il terminatore di stringa
+    return risultato;      // restituisce la stringa ordinata
 }
 
 int main()
